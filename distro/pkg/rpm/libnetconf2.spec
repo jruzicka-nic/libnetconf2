@@ -12,6 +12,7 @@ BuildRequires:  gcc
 BuildRequires:  libssh-devel
 BuildRequires:  openssl-devel
 BuildRequires:  pkgconfig(libyang) >= 2
+BuildRequires:  pkgconfig(cmocka)
 
 %package devel
 Summary:    Headers of libnetconf2 library
@@ -28,21 +29,17 @@ servers. NETCONF is the NETwork CONFiguration protocol introduced by IETF.
 
 %prep
 %autosetup -p1
-mkdir build
 
 %build
-cd build
-cmake \
-    -DCMAKE_INSTALL_PREFIX:PATH=%{_prefix} \
-    -DCMAKE_BUILD_TYPE:String="Release" \
-    -DCMAKE_C_FLAGS="${RPM_OPT_FLAGS}" \
-    -DCMAKE_CXX_FLAGS="${RPM_OPT_FLAGS}" \
-    ..
-make
+%cmake
+%cmake_build
 
 %install
-cd build
-make DESTDIR=%{buildroot} install
+%cmake_install
+
+%check
+%ctest
+
 
 %files
 %license LICENSE
